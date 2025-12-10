@@ -30,6 +30,7 @@ This is a Flutter default app template configured for **release build** with **k
 ```bash
 git clone <your-repo-url>
 cd flutter_default_app
+```
 ````
 
 2. Install Flutter dependencies:
@@ -57,7 +58,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 ```
 
-* Additional dependencies can be added as needed.
+- Additional dependencies can be added as needed.
 
 ---
 
@@ -70,12 +71,12 @@ Flutter release build requires a **signing key**.
 Open terminal at project root and run:
 
 ```bash
-keytool -genkey -v -keystore android/app/keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias flutterapp
+keytool -genkey -v -keystore android/app/keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias appname
 ```
 
-* Enter keystore password (example: `flutterpass`)
-* Enter key password (example: `flutterpass`)
-* Fill Distinguished Name or leave default values.
+- Enter keystore password (example: `flutterpass`)
+- Enter key password (example: `flutterpass`)
+- Fill Distinguished Name or leave default values.
 
 > Output file: `android/app/keystore.jks`
 
@@ -182,16 +183,16 @@ flutter build appbundle --release
 flutter build apk --release --target-platform android-arm,android-arm64 --split-per-abi
 ```
 
-* APK Output: `build/app/outputs/flutter-apk/app-release.apk`
-* AAB Output: `build/app/outputs/bundle/release/app-release.aab`
+- APK Output: `build/app/outputs/flutter-apk/app-release.apk`
+- AAB Output: `build/app/outputs/bundle/release/app-release.aab`
 
 ---
 
 ## Install APK / Play Store
 
-* Enable **Unknown Sources** on your Android device.
-* Install APK directly (`app-release.apk`)
-* Upload **AAB** to Play Store for production release.
+- Enable **Unknown Sources** on your Android device.
+- Install APK directly (`app-release.apk`)
+- Upload **AAB** to Play Store for production release.
 
 ---
 
@@ -199,13 +200,13 @@ flutter build apk --release --target-platform android-arm,android-arm64 --split-
 
 1. **keytool not recognized**
 
-* Install JDK and set `JAVA_HOME` environment variable.
-* Add `%JAVA_HOME%\bin` to PATH.
+- Install JDK and set `JAVA_HOME` environment variable.
+- Add `%JAVA_HOME%\bin` to PATH.
 
 2. **Parsing package error**
 
-* Use split APK for 32-bit devices.
-* Ensure `minSdkVersion >= 21`.
+- Use split APK for 32-bit devices.
+- Ensure `minSdkVersion >= 21`.
 
 3. **Flutter build errors**
 
@@ -219,12 +220,14 @@ flutter doctor
 
 ## Notes
 
-* Keep `keystore.jks` safe for all future updates.
-* Do not share `key.properties` publicly.
-* Splash and icons can be updated in `assets/` and regenerated.
+- Keep `keystore.jks` safe for all future updates.
+- Do not share `key.properties` publicly.
+- Splash and icons can be updated in `assets/` and regenerated.
 
 ---
 
 **Developed by Your Name**
+
+```
 
 ```
