@@ -3,8 +3,8 @@ name: Flutter Release Build
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - main  # main branch এ push হলে build হবে
+  workflow_dispatch:   # manual trigger
 
 jobs:
   build:
@@ -15,33 +15,42 @@ jobs:
       FLUTTER_CHANNEL: stable
 
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ Setup Flutter (stable channel, version 3.9.0)
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v3
         with:
-          flutter-version: '3.9.0'
-          channel: ${{ env.FLUTTER_CHANNEL }}
+          flutter-version: 3.9.0-stable
 
+      # 3️⃣ Install dependencies
       - name: Flutter Pub Get
         run: flutter pub get
 
+      # 4️⃣ Setup Keystore
       - name: Setup Keystore
         run: |
           mkdir -p android/app
+          # Decode keystore from GitHub secret
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/keystore.jks
+          # Write key.properties
           echo "${{ secrets.KEY_PROPERTIES }}" > android/key.properties
 
+      # 5️⃣ Clean previous builds
       - name: Flutter Clean
         run: flutter clean
 
+      # 6️⃣ Build Release APK
       - name: Build Release APK
         run: flutter build apk --release
 
-      - name: Build App Bundle (AAB)
+      # 7️⃣ Build Release AAB (Play Store)
+      - name: Build App Bundle
         run: flutter build appbundle --release
 
+      # 8️⃣ Upload artifacts for download
       - name: Upload APK & AAB Artifacts
         uses: actions/upload-artifact@v4
         with:
