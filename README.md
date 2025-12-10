@@ -1,14 +1,13 @@
-ঠিক আছে! আমি আপনার জন্য একটি **professional-ready README.md** বানিয়ে দিচ্ছি যা পুরো Flutter WebView app এর জন্য **setup, build, release, splash & icon, keystore** সব cover করবে।
+ঠিক আছে! আমি আপনাকে একটি **complete professional-ready `README.md`** বানিয়ে দিচ্ছি যা **Flutter default app** এর জন্য হবে, এবং এতে থাকবে **keystore setup, release build, splash & icon setup**।
 
 ---
 
-# `README.md` for Bojoit Flutter WebView App
+# `README.md` for Flutter Default App (Release Ready with Keystore)
 
 ````markdown
-# Bojoit Flutter WebView App
+# Flutter Default App - Release Ready Setup
 
-A professional Flutter WebView app that loads `https://bojoit.com`.  
-This project includes splash screen, launcher icon, connectivity handling, and Play Store ready build setup.
+This is a Flutter default app template configured for **release build** with **keystore**, **splash screen**, **launcher icon**, and **Play Store-ready setup**.
 
 ---
 
@@ -16,10 +15,9 @@ This project includes splash screen, launcher icon, connectivity handling, and P
 
 - [Project Setup](#project-setup)
 - [Dependencies](#dependencies)
-- [Flutter Configuration](#flutter-configuration)
-- [Splash Screen & App Icon](#splash-screen--app-icon)
-- [Keystore Setup for Release](#keystore-setup-for-release)
+- [Keystore Setup](#keystore-setup)
 - [Build Commands](#build-commands)
+- [Splash Screen & App Icon](#splash-screen--app-icon)
 - [Install APK / Play Store](#install-apk--play-store)
 - [Troubleshooting](#troubleshooting)
 
@@ -31,7 +29,7 @@ This project includes splash screen, launcher icon, connectivity handling, and P
 
 ```bash
 git clone <your-repo-url>
-cd bojoit
+cd flutter_default_app
 ````
 
 2. Install Flutter dependencies:
@@ -40,7 +38,7 @@ cd bojoit
 flutter pub get
 ```
 
-3. Ensure Android SDK, JDK, and device/emulator are ready:
+3. Check Flutter environment:
 
 ```bash
 flutter doctor
@@ -50,104 +48,51 @@ flutter doctor
 
 ## Dependencies
 
-* Flutter SDK ≥ 3.9.0
-* [flutter_inappwebview](https://pub.dev/packages/flutter_inappwebview)
-* [webview_flutter](https://pub.dev/packages/webview_flutter)
-* [connectivity_plus](https://pub.dev/packages/connectivity_plus)
-* [url_launcher](https://pub.dev/packages/url_launcher)
-* [flutter_launcher_icons](https://pub.dev/packages/flutter_launcher_icons)
-* [flutter_native_splash](https://pub.dev/packages/flutter_native_splash)
-
-All dependencies are already listed in `pubspec.yaml`.
-
----
-
-## Flutter Configuration
-
-**main.dart**:
-
-* Loads your website in a full-screen WebView.
-* Handles **connectivity changes**.
-* Handles **back button navigation**.
-* Shows **progress indicator** while loading.
-
-Example snippet:
-
-```dart
-InAppWebView(
-  initialUrlRequest: URLRequest(url: Uri.parse("https://bojoit.com")),
-  initialOptions: InAppWebViewGroupOptions(
-    crossPlatform: InAppWebViewOptions(
-      javaScriptEnabled: true,
-      mediaPlaybackRequiresUserGesture: false,
-    ),
-  ),
-  onWebViewCreated: (controller) => webViewController = controller,
-)
-```
-
----
-
-## Splash Screen & App Icon
-
-### App Icon
-
-* Path: `assets/icon/app_icon.png`
-* Configured in `pubspec.yaml` with **flutter_launcher_icons**:
+The default Flutter app requires only:
 
 ```yaml
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/icon/app_icon.png"
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
 ```
 
-* Generate icons:
-
-```bash
-flutter pub run flutter_launcher_icons:main
-```
-
-### Splash Screen
-
-* Path: `assets/splash/logo.png`
-* Configured in `pubspec.yaml` with **flutter_native_splash**:
-
-```yaml
-flutter_native_splash:
-  color: "#ffffff"
-  image: assets/splash/logo.png
-  android: true
-  ios: true
-  web: false
-```
-
-* Generate splash:
-
-```bash
-flutter pub run flutter_native_splash:create
-```
+* Additional dependencies can be added as needed.
 
 ---
 
-## Keystore Setup for Release
+## Keystore Setup
 
-1. Generate keystore:
+Flutter release build requires a **signing key**.
+
+1. **Generate Keystore**
+
+Open terminal at project root and run:
 
 ```bash
-keytool -genkey -v -keystore android/app/bojoit.jks -keyalg RSA -keysize 2048 -validity 10000 -alias bojoit
+keytool -genkey -v -keystore android/app/keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias flutterapp
 ```
 
-2. Create `android/key.properties`:
+* Enter keystore password (example: `flutterpass`)
+* Enter key password (example: `flutterpass`)
+* Fill Distinguished Name or leave default values.
+
+> Output file: `android/app/keystore.jks`
+
+2. **Create `key.properties`** in `android/` folder:
 
 ```properties
-storePassword=<your_keystore_password>
-keyPassword=<your_key_password>
-keyAlias=bojoit
-storeFile=bojoit.jks
+storePassword=flutterpass
+keyPassword=flutterpass
+keyAlias=flutterapp
+storeFile=keystore.jks
 ```
 
-3. Configure `android/app/build.gradle.kts` to use release signing:
+---
+
+## Configure `android/app/build.gradle.kts`
+
+Add release signing configuration:
 
 ```kotlin
 signingConfigs {
@@ -166,6 +111,8 @@ signingConfigs {
 
 buildTypes {
     release {
+        isMinifyEnabled = false
+        isShrinkResources = false
         signingConfig = signingConfigs.getByName("release")
     }
 }
@@ -173,72 +120,94 @@ buildTypes {
 
 ---
 
+## Splash Screen & App Icon
+
+1. Place your splash image:
+
+```
+assets/splash/logo.png
+```
+
+2. Place your app icon:
+
+```
+assets/icon/app_icon.png
+```
+
+3. Configure `pubspec.yaml`:
+
+```yaml
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/splash/
+    - assets/icon/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+
+flutter_native_splash:
+  color: "#ffffff"
+  image: assets/splash/logo.png
+  android: true
+  ios: true
+```
+
+4. Generate icons & splash:
+
+```bash
+flutter pub run flutter_launcher_icons:main
+flutter pub run flutter_native_splash:create
+```
+
+---
+
 ## Build Commands
 
-Run from **project root**:
-
-### Clean + Get Dependencies
+Run from project root:
 
 ```bash
 flutter clean
 flutter pub get
-```
 
-### Build APK
-
-```bash
+# Build release APK
 flutter build apk --release
-```
 
-* Output: `build/app/outputs/flutter-apk/app-release.apk`
-
-### Build AAB (Play Store)
-
-```bash
+# Build Play Store ready AAB
 flutter build appbundle --release
-```
 
-* Output: `build/app/outputs/bundle/release/app-release.aab`
-
-### Optional: Split APK (32-bit & 64-bit)
-
-```bash
+# Optional: Split APK for 32-bit & 64-bit
 flutter build apk --release --target-platform android-arm,android-arm64 --split-per-abi
 ```
 
-* Output:
-
-```
-app-armeabi-v7a-release.apk
-app-arm64-v8a-release.apk
-```
+* APK Output: `build/app/outputs/flutter-apk/app-release.apk`
+* AAB Output: `build/app/outputs/bundle/release/app-release.aab`
 
 ---
 
 ## Install APK / Play Store
 
 * Enable **Unknown Sources** on your Android device.
-* Install APK directly: `app-release.apk`
-* Upload AAB to Play Store for production release.
+* Install APK directly (`app-release.apk`)
+* Upload **AAB** to Play Store for production release.
 
 ---
 
 ## Troubleshooting
 
-1. **“There was a problem parsing the package”**
+1. **keytool not recognized**
 
-   * Use **split APK** for 32-bit devices.
-   * Ensure **minSdkVersion ≥ 21**.
-   * Uninstall old debug version before installing release APK.
+* Install JDK and set `JAVA_HOME` environment variable.
+* Add `%JAVA_HOME%\bin` to PATH.
 
-2. **keytool not recognized**
+2. **Parsing package error**
 
-   * Install JDK and set `JAVA_HOME` environment variable.
-   * Add `%JAVA_HOME%\bin` to system PATH.
+* Use split APK for 32-bit devices.
+* Ensure `minSdkVersion >= 21`.
 
 3. **Flutter build errors**
-
-   * Run:
 
 ```bash
 flutter clean
@@ -250,19 +219,12 @@ flutter doctor
 
 ## Notes
 
-* Keep **bojoit.jks** safe. Needed for all future updates.
-* Passwords in `key.properties` should **never be shared**.
-* Splash & Icon can be updated in `assets/` and regenerated using the above commands.
+* Keep `keystore.jks` safe for all future updates.
+* Do not share `key.properties` publicly.
+* Splash and icons can be updated in `assets/` and regenerated.
 
 ---
 
-**Developed by Ashik Ahmed**
+**Developed by Your Name**
 
-```
-
----
-
-আমি চাইলে আমি এই README এর সাথে **project-ready folder structure + copy-paste build commands** সহ একটি **one-line ready guide** বানিয়ে দিতে পারি, যা নতুন developer একবারে setup করতে পারবে।  
-
-আপনি কি সেটা চান?
 ```
